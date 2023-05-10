@@ -11,4 +11,19 @@
         <maven.compiler.target>11</maven.compiler.target>
         <exec.mainClass>com.yefrig.databasemanagementsystem.DataBaseManagementSystem</exec.mainClass>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>com.yefrig.databasemanagementsystem.DataBaseManagementSystem</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
