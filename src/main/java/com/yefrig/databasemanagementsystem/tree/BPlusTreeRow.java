@@ -9,7 +9,8 @@ package com.yefrig.databasemanagementsystem.tree;
  * @author yefri
  */
 public class BPlusTreeRow {
-     private NodeTreeRow root;
+
+    private NodeTreeRow root;
     private int order;
 
     public BPlusTreeRow() {
@@ -19,7 +20,7 @@ public class BPlusTreeRow {
 
     public void insert(int key, Object value) {
         NodeTreeRow node = root;
-        if (node.getNumKeys() == 2*order - 1) {
+        if (node.getNumKeys() == 2 * order - 1) {
             NodeTreeRow newRoot = new NodeTreeRow(order, false);
             newRoot.getChildren()[0] = root;
             root = newRoot;
@@ -34,19 +35,19 @@ public class BPlusTreeRow {
         int i = node.getNumKeys() - 1;
         if (node.getIsLeaf()) {
             while (i >= 0 && key < node.getKeys()[i]) {
-                node.getKeys()[i+1] = node.getKeys()[i];
-                node.getValues()[i+1] = node.getValues()[i];
+                node.getKeys()[i + 1] = node.getKeys()[i];
+                node.getValues()[i + 1] = node.getValues()[i];
                 i--;
             }
-            node.getKeys()[i+1] = key;
-            node.getValues()[i+1] = value;
-            node.setNumKeys(node.getNumKeys()+1) ;
+            node.getKeys()[i + 1] = key;
+            node.getValues()[i + 1] = value;
+            node.setNumKeys(node.getNumKeys() + 1);
         } else {
             while (i >= 0 && key < node.getKeys()[i]) {
                 i--;
             }
             i++;
-            if (node.getChildren()[i].getNumKeys() == 2*order - 1) {
+            if (node.getChildren()[i].getNumKeys() == 2 * order - 1) {
                 node.split(i, order);
                 if (key > node.getKeys()[i]) {
                     i++;
@@ -66,6 +67,30 @@ public class BPlusTreeRow {
             node = node.getChildren()[i];
         }
         return node.search(key);
+    }
+
+    public void print() {
+        NodeTreeRow node = root;
+        while (!node.getIsLeaf()) {
+            int i = 0;
+            while (i < node.getNumKeys()) {
+                i++;
+            }
+            node = node.getChildren()[i];
+        }
+    }
+
+    public void printValues() {
+        NodeTreeRow node = root;
+        while (!node.getIsLeaf()) {
+            node = node.getChildren()[0];
+        }
+        while (node != null) {
+            for (int i = 0; i < node.getNumKeys(); i++) {
+                System.out.println(node.getValues()[i]);
+            }
+            node = node.getNextLeaf();
+        }
     }
 
 }

@@ -21,8 +21,8 @@ public class Struct {
     public Struct(){
         this.next=null;
     }
-    public void insertRow(String[] data) {
-        this.tree.insert(0, data);
+    public void insertRow(ListColumn data) {
+        this.tree.insert(0,data);
     }
 
     public String getName() {
@@ -31,6 +31,10 @@ public class Struct {
 
     public ListColumn getColumns() {
         return columns;
+    }
+
+    public BPlusTreeRow getTree() {
+        return tree;
     }
 
     public void setColumns(ListColumn columns) {

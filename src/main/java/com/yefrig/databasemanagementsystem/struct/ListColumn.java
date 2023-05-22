@@ -53,4 +53,14 @@ public class ListColumn {
         }
         return text;
     }
+    
+       public int getLength() {
+        int cant = 0;
+        NodeColumn current = head;
+        while (current != null) {
+            cant++;
+            current = current.getNext();
+        }
+        return cant;
+    }
 }
