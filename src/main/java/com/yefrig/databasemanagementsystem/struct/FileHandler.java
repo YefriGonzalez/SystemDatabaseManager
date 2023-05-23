@@ -147,13 +147,13 @@ public class FileHandler {
                                         String type = nc.getType();
                                         if (type.equals("int")) {
                                             if (isInteger(valueNode)) {
-                                                listRows.insertAtEnd(new NodeColumn(name, valueNode));
+                                                listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
                                             } else {
                                                 System.out.println("El valor no es un entero");
                                                 break;
                                             }
                                         } else {
-                                            listRows.insertAtEnd(new NodeColumn(name, valueNode));
+                                            listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
                                         }
                                     } else {
                                         System.out.println("La columna " + nameNode + ", no contiene dato");
@@ -167,6 +167,8 @@ public class FileHandler {
                         }
                         if (listRows.getLength() == lenghtColumns) {
                             System.out.println("Fila Agregada");
+                            st.insertRow(listRows);
+                            st.getTree().printValues();
                         } else {
                             System.out.println("Los datos no son correctos para crear una fila");
                         }

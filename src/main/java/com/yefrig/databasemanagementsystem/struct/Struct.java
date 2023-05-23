@@ -18,8 +18,10 @@ public class Struct {
     private ListColumn columns;
     private BPlusTreeRow tree;
 
+
     public Struct(){
         this.next=null;
+        this.tree=new BPlusTreeRow();
     }
     public void insertRow(ListColumn data) {
         this.tree.insert(0,data);

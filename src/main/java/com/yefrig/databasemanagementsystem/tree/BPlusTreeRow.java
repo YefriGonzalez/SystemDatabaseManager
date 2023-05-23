@@ -4,6 +4,8 @@
  */
 package com.yefrig.databasemanagementsystem.tree;
 
+import com.yefrig.databasemanagementsystem.struct.ListColumn;
+
 /**
  *
  * @author yefri
@@ -18,7 +20,7 @@ public class BPlusTreeRow {
         this.root = new NodeTreeRow(order, true);
     }
 
-    public void insert(int key, Object value) {
+    public void insert(int key, ListColumn value) {
         NodeTreeRow node = root;
         if (node.getNumKeys() == 2 * order - 1) {
             NodeTreeRow newRoot = new NodeTreeRow(order, false);
@@ -31,7 +33,7 @@ public class BPlusTreeRow {
         }
     }
 
-    private void insertNonFull(NodeTreeRow node, int key, Object value) {
+    private void insertNonFull(NodeTreeRow node, int key, ListColumn value) {
         int i = node.getNumKeys() - 1;
         if (node.getIsLeaf()) {
             while (i >= 0 && key < node.getKeys()[i]) {
@@ -69,17 +71,6 @@ public class BPlusTreeRow {
         return node.search(key);
     }
 
-    public void print() {
-        NodeTreeRow node = root;
-        while (!node.getIsLeaf()) {
-            int i = 0;
-            while (i < node.getNumKeys()) {
-                i++;
-            }
-            node = node.getChildren()[i];
-        }
-    }
-
     public void printValues() {
         NodeTreeRow node = root;
         while (!node.getIsLeaf()) {
@@ -87,7 +78,8 @@ public class BPlusTreeRow {
         }
         while (node != null) {
             for (int i = 0; i < node.getNumKeys(); i++) {
-                System.out.println(node.getValues()[i]);
+                System.out.println(node.getValues()[i].toString());
+                System.out.println("----------------------------------------------------------------------\n");
             }
             node = node.getNextLeaf();
         }

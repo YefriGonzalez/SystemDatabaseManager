@@ -34,5 +34,7 @@ public class NodeColumn {
         this.next = next;
     }
     
-    
+    public String toString(){
+        return "Nombre: "+name+"; Valor: "+type;
+    }
 }

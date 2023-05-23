@@ -53,8 +53,19 @@ public class ListColumn {
         }
         return text;
     }
+
+    @Override
+    public String toString(){
+         String text = "";
+        NodeColumn current = head;
+        while (current != null) {
+            text += current.getName() + ": " + current.getType() + "\n";
+            current = current.getNext();
+        }
+        return text;
+    }
     
-       public int getLength() {
+    public int getLength() {
         int cant = 0;
         NodeColumn current = head;
         while (current != null) {

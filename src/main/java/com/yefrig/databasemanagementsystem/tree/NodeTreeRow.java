@@ -4,6 +4,9 @@
  */
 package com.yefrig.databasemanagementsystem.tree;
 
+import com.yefrig.databasemanagementsystem.struct.ListColumn;
+import com.yefrig.databasemanagementsystem.struct.NodeColumn;
+
 /**
  *
  * @author yefri
@@ -11,7 +14,7 @@ package com.yefrig.databasemanagementsystem.tree;
 public class NodeTreeRow {
 
     private int[] keys;
-    private Object[] values;
+    private ListColumn[] values;
     private NodeTreeRow[] children;
     private boolean isLeaf;
     private int numKeys;
@@ -19,14 +22,14 @@ public class NodeTreeRow {
 
     public NodeTreeRow(int order, boolean isLeaf) {
         this.keys = new int[order];
-        this.values = new Object[order];
+        this.values = new ListColumn[order];
         this.children = new NodeTreeRow[order + 1];
         this.isLeaf = isLeaf;
         this.numKeys = 0;
         this.nextLeaf = null;
     }
 
-    public void insert(int key, Object value) {
+    public void insert(int key, ListColumn value) {
         int i = numKeys - 1;
         while (i >= 0 && keys[i] > key) {
             keys[i + 1] = keys[i];
@@ -100,7 +103,7 @@ public class NodeTreeRow {
         return keys;
     }
 
-    public Object[] getValues() {
+    public ListColumn[] getValues() {
         return values;
     }
 
@@ -122,6 +125,15 @@ public class NodeTreeRow {
 
     public void setNumKeys(int numKeys) {
         this.numKeys = numKeys;
+    }
+    
+    @Override
+    public String toString(){
+        String text="";
+        for (int i = 0; i < values.length; i++) {
+            text+=values[i].toString();
+        }
+        return text;
     }
 
 }
