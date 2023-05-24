@@ -7,8 +7,6 @@ package com.yefrig.databasemanagementsystem.struct;
 import com.yefrig.databasemanagementsystem.front.StartJFrame;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextArea;
@@ -101,6 +99,7 @@ public class FileHandler {
                     }
                     if (clave != null) {
                         NodeColumn c = list.getNode(clave);
+                        c.setPrimaryKey(true);
                         if (c != null) {
                             struct.setKey(clave);
                             struct.setColumns(list);
@@ -117,7 +116,7 @@ public class FileHandler {
         }
         this.textArea.append("Estructuras: \n");
         this.textArea.append(listStruct.printList());
-        
+
     }
 
     public void fileAddRow(File file) {
@@ -141,6 +140,10 @@ public class FileHandler {
                     if (st != null) {
                         lenghtColumns = st.getColumns().getLength();
                         NodeList listColumns = node.getChildNodes();
+                        NodeColumn primaryKey = st.getColumns().getPrimaryKey();
+                        if (primaryKey == null) {
+                            break;
+                        }
                         for (int j = 0; j < listColumns.getLength(); j++) {
                             Node n = listColumns.item(j);
                             if (n.getNodeType() == Node.ELEMENT_NODE) {
@@ -150,16 +153,30 @@ public class FileHandler {
                                 if (nc != null) {
                                     if (!valueNode.equals("")) {
                                         String type = nc.getType();
-                                        if (type.equals("int")) {
-                                            if (isInteger(valueNode)) {
-                                                listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
+                                        if (primaryKey.getName().equals(nc.getName())) {
+                                            if (type.equals("int")) {
+                                                if (isInteger(valueNode)) {
+                                                    listRows.insertAtEnd(new NodeColumn(nameNode, valueNode, true));
+                                                } else {
+                                                    this.textArea.append("ERROR, El valor no es un entero\n");
+                                                    break;
+                                                }
                                             } else {
-                                                this.textArea.append("ERROR, El valor no es un entero\n");
-                                                break;
+                                                listRows.insertAtEnd(new NodeColumn(nameNode, valueNode, true));
                                             }
                                         } else {
-                                            listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
+                                            if (type.equals("int")) {
+                                                if (isInteger(valueNode)) {
+                                                    listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
+                                                } else {
+                                                    this.textArea.append("ERROR, El valor no es un entero\n");
+                                                    break;
+                                                }
+                                            } else {
+                                                listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
+                                            }
                                         }
+
                                     } else {
                                         this.textArea.append("ERROR, La columna " + nameNode + ", no contiene dato");
                                     }
@@ -171,22 +188,25 @@ public class FileHandler {
 
                         }
                         if (listRows.getLength() == lenghtColumns) {
-                            st.insertRow(listRows);
-                            this.textArea.append("Fila Agregada a: "+st.getName()+"\n");
+                            boolean process = st.InsertRow(listRows, listRows.getPrimaryKey().getType());
+                            if (process) {
+                                this.textArea.append("Fila Agregada a: " + st.getName() + "\n");
+                            } else {
+                                this.textArea.append("ERROR, fila ya existente");
+                            }
                         } else {
                             this.textArea.append("ERROR, Los datos no son correctos para crear una fila");
                         }
                     } else {
-                        this.textArea.append("ERROR, La tabla: "+name+", NO EXISTE");
+                        this.textArea.append("ERROR, La tabla: " + name + ", NO EXISTE");
                         break;
                     }
-                    System.out.println(st.getTree().printValues());
                 }
             }
             if (st != null) {
                 this.textArea.append("Filas de " + st.getName() + ":  \n");
-                
-                this.textArea.append(st.getTree().printValues());
+                this.textArea.append(st.getTree().printTreeValues());
+                st.getTree().printTree();
             }
         } catch (ParserConfigurationException | SAXException | IOException ex) {
         }
@@ -211,7 +231,7 @@ public class FileHandler {
                         String nameNode = node.getNodeName().replaceAll(" ", "");
                         String valueNode = node.getTextContent().replaceAll(" ", "");
                         if (st.getKey().equals(nameNode)) {
-                            //Buscar en arbol y eliminar
+                            //MEtodo para eliminar
                         } else {
                             System.out.println(nameNode + ", No es llave primaria");
                         }
@@ -233,7 +253,19 @@ public class FileHandler {
             for (int i = 0; i < nodeList.getLength(); i++) {//Recorrido de las estructuras encontrada
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-
+                    String nameNode = node.getNodeName().replaceAll(" ", "");
+                    String valueNode = node.getTextContent().replaceAll(" ", "");
+                    Struct st = listStruct.getStruct(nameNode);
+                    if (st != null) {
+                        if (st.getColumns().getPrimaryKey().getName().equals(valueNode)) {
+                            this.textArea.append("Filas de " + st.getName() + ":  \n");
+                            this.textArea.append(st.getTree().printTreeValues());
+                        } else {
+                            this.textArea.append("ERROR,  " + valueNode + ", NO ES LLAVE PRIMARIA");
+                        }
+                    } else {
+                        this.textArea.append("ERROR, La tabla: " + node.getNodeName() + ", NO EXISTE");
+                    }
                 }
             }
         } catch (ParserConfigurationException | SAXException | IOException ex) {

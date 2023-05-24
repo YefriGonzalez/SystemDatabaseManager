@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.yefrig.databasemanagementsystem.tree;
+package com.yefrig.databasemanagementsystem.treeArray;
 
 import com.yefrig.databasemanagementsystem.struct.ListColumn;
 
@@ -53,7 +53,11 @@ public class BPlusTreeRow {
                 NodeTreeRow child = node.getChildren()[i];
                 NodeTreeRow newChild = new NodeTreeRow(order, child.getIsLeaf());
                 node.split(i, newChild);
-                node.getChildren()[i + 1] = newChild; // Asignar el nuevo nodo al arreglo de hijos
+                for (int j = node.getNumKeys(); j > i; j--) {
+                    node.getChildren()[j + 1] = node.getChildren()[j];
+                }
+                node.getChildren()[i + 1] = newChild;
+                //node.getChildren()[i + 1] = newChild; // Asignar el nuevo nodo al arreglo de hijos
                 if (key > node.getKeys()[i]) {
                     i++;
                 }
@@ -118,5 +122,4 @@ public class BPlusTreeRow {
 //            }
 //        }
 //    }
-
 }

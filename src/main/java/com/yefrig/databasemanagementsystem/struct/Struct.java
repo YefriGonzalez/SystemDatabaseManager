@@ -4,7 +4,7 @@
  */
 package com.yefrig.databasemanagementsystem.struct;
 
-import com.yefrig.databasemanagementsystem.tree.BPlusTreeRow;
+import com.yefrig.databasemanagementsystem.tree.BPlusTree;
 
 /**
  *
@@ -16,17 +16,21 @@ public class Struct {
     private String key;
     private Struct next;
     private ListColumn columns;
-    private BPlusTreeRow tree;
-    private static int cont;
 
-    public Struct(){
-        this.next=null;
-        this.tree=new BPlusTreeRow();
-        this.cont=0;
+    private BPlusTree tree;
+
+    public Struct() {
+        this.next = null;
+        this.tree = new BPlusTree(4);
     }
-    public void insertRow(ListColumn data) {
-        this.tree.insert(cont,data);
-        cont++;
+
+    public Boolean InsertRow(ListColumn data, String primaryKey) {
+        this.tree.insert(data, primaryKey);
+        return true;
+    }
+
+    public BPlusTree getTree() {
+        return this.tree;
     }
 
     public String getName() {
@@ -35,10 +39,6 @@ public class Struct {
 
     public ListColumn getColumns() {
         return columns;
-    }
-
-    public BPlusTreeRow getTree() {
-        return tree;
     }
 
     public void setColumns(ListColumn columns) {
@@ -64,6 +64,5 @@ public class Struct {
     public void setNext(Struct next) {
         this.next = next;
     }
-    
 
 }

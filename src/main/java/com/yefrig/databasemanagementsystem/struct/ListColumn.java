@@ -43,12 +43,23 @@ public class ListColumn {
         }
         return null;
     }
+    
+    public NodeColumn getPrimaryKey(){
+        NodeColumn current=head;
+        while(current!=null){
+            if(current.isPrimaryKey()){
+                return current;
+            }
+            current=current.getNext();
+        }
+        return null;
+    }
 
     public String printList() {
         String text = "";
         NodeColumn current = head;
         while (current != null) {
-            text += "Nombre de columna: " + current.getName() + "; Tipo de dato: " + current.getType() + "\n";
+            text += "Nombre de columna: " + current.getName() + "; Tipo de dato: " + current.getType() + "; Llave primaria: "+current.isPrimaryKey()+"\n";
             current = current.getNext();
         }
         return text;
