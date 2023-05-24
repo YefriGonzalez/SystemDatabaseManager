@@ -22,7 +22,7 @@ public class BPlusTreeRow {
 
     public void insert(int key, ListColumn value) {
         NodeTreeRow node = root;
-        if (node.getNumKeys() == 2 * order - 1) {
+        if (node.getNumKeys() == order) {
             NodeTreeRow newRoot = new NodeTreeRow(order, false);
             newRoot.getChildren()[0] = root;
             root = newRoot;
@@ -49,13 +49,19 @@ public class BPlusTreeRow {
                 i--;
             }
             i++;
-            if (node.getChildren()[i].getNumKeys() == 2 * order - 1) {
-                node.split(i, order);
+            if (node.getChildren()[i] != null && node.getChildren()[i].getNumKeys() == order) {
+                NodeTreeRow child = node.getChildren()[i];
+                NodeTreeRow newChild = new NodeTreeRow(order, child.getIsLeaf());
+                node.split(i, newChild);
+                node.getChildren()[i + 1] = newChild; // Asignar el nuevo nodo al arreglo de hijos
                 if (key > node.getKeys()[i]) {
                     i++;
                 }
             }
-            insertNonFull(node.getChildren()[i], key, value);
+            if (node.getChildren()[i] != null) {
+                insertNonFull(node.getChildren()[i], key, value);
+            }
+
         }
     }
 
@@ -71,18 +77,46 @@ public class BPlusTreeRow {
         return node.search(key);
     }
 
-    public void printValues() {
+    public String printValues() {
+        String text = "";
         NodeTreeRow node = root;
         while (!node.getIsLeaf()) {
-            node = node.getChildren()[0];
+            if (node.getNumKeys() > 0) {
+                node = node.getChildren()[0];
+            } else {
+                break; // No hay más hijos, salir del bucle
+            }
         }
         while (node != null) {
-            for (int i = 0; i < node.getNumKeys(); i++) {
-                System.out.println(node.getValues()[i].toString());
-                System.out.println("----------------------------------------------------------------------\n");
+            if (node.getNumKeys() > 0) {
+                for (int i = 0; i < node.getNumKeys(); i++) {
+                    text += "ID: " + node.getKeys()[i] + ", " + node.getValues()[i].toString() + "\n";
+                    text += "----------------------------------------------------------------------\n";
+                }
             }
+
             node = node.getNextLeaf();
         }
+        return text;
     }
+
+//    public void delete(int key) {
+//        if (root == null) {
+//            return;
+//        }
+//
+//        delete(key);
+//
+//        // Verificar si la raíz quedó vacía después de la eliminación
+//        if (root.getNumKeys() == 0) {
+//            if (root.getIsLeaf()) {
+//                // Si la raíz es una hoja y quedó vacía, se establece la raíz como null
+//                root = null;
+//            } else {
+//                // Si la raíz es un nodo interno y quedó vacía, se actualiza la raíz al primer hijo
+//                root = root.getChildren()[0];
+//            }
+//        }
+//    }
 
 }

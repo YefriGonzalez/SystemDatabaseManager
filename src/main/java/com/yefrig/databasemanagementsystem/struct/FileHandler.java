@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTextArea;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,9 +28,11 @@ import org.xml.sax.SAXException;
 public class FileHandler {
 
     private ListStruct listStruct;
+    private JTextArea textArea;
 
-    public FileHandler() {
+    public FileHandler(JTextArea textArea) {
         listStruct = new ListStruct();
+        this.textArea = textArea;
     }
 
     public void fileAddStruct(File file) {
@@ -52,11 +55,11 @@ public class FileHandler {
                             String valueNode = childNode.getTextContent().replaceAll(" ", "");//Valor del nodo
                             valueNode = valueNode.replaceAll("\t", "");
                             if (nodeName.equals("tabla")) {
-                                Struct tmp=listStruct.getStruct(valueNode);
-                                if(tmp==null){
+                                Struct tmp = listStruct.getStruct(valueNode);
+                                if (tmp == null) {
                                     struct.setName(valueNode);
                                 } else {
-                                    System.out.println("La tabla "+valueNode+" ya existe ");
+                                    this.textArea.append("ERROR, La tabla " + valueNode + " ya existe \n");
                                     break;
                                 }
                             } else if (nodeName.equals("clave")) {
@@ -87,7 +90,7 @@ public class FileHandler {
                                     NodeColumn nc = new NodeColumn(nameColumn, valueColumn);
                                     list.insertAtEnd(nc);
                                 } else {
-                                    System.out.println("La relacion no cumple los requisitos");
+                                    this.textArea.append("ERROR,La relacion no cumple los requisitos\n");
                                     break;
                                 }
                             } else {
@@ -102,9 +105,9 @@ public class FileHandler {
                             struct.setKey(clave);
                             struct.setColumns(list);
                             listStruct.insertAtEnd(struct);
-                            System.out.println("Estructura creada");
+                            this.textArea.append("Estructura creada\n");
                         } else {
-                            System.out.println("No tiene los datos completos");
+                            this.textArea.append("ERROR, la llave primario no es correcta\n");
                         }
                     }
                 }
@@ -112,11 +115,12 @@ public class FileHandler {
         } catch (ParserConfigurationException | SAXException | IOException ex) {
             Logger.getLogger(StartJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-        listStruct.printList();
+        this.textArea.append("Estructuras: \n");
+        this.textArea.append(listStruct.printList());
+        
     }
 
     public void fileAddRow(File file) {
-        listStruct.printList();
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -126,12 +130,13 @@ public class FileHandler {
             String rootTagName = root.getTagName();
             NodeList nodeList = document.getElementsByTagName(rootTagName);
             NodeList list = nodeList.item(0).getChildNodes();
+            Struct st = null;
             for (int i = 0; i < list.getLength(); i++) {
                 Node node = list.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     ListColumn listRows = new ListColumn();
                     String name = node.getNodeName().replaceAll(" ", "");
-                    Struct st = listStruct.getStruct(name);
+                    st = listStruct.getStruct(name);
                     int lenghtColumns = 0;
                     if (st != null) {
                         lenghtColumns = st.getColumns().getLength();
@@ -149,34 +154,39 @@ public class FileHandler {
                                             if (isInteger(valueNode)) {
                                                 listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
                                             } else {
-                                                System.out.println("El valor no es un entero");
+                                                this.textArea.append("ERROR, El valor no es un entero\n");
                                                 break;
                                             }
                                         } else {
                                             listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
                                         }
                                     } else {
-                                        System.out.println("La columna " + nameNode + ", no contiene dato");
+                                        this.textArea.append("ERROR, La columna " + nameNode + ", no contiene dato");
                                     }
                                 } else {
-                                    System.out.println("La columna " + nameNode + ", no existe");
+                                    this.textArea.append("ERROR, La columna " + nameNode + ", no existe");
                                     break;
                                 }
                             }
 
                         }
                         if (listRows.getLength() == lenghtColumns) {
-                            System.out.println("Fila Agregada");
                             st.insertRow(listRows);
-                            st.getTree().printValues();
+                            this.textArea.append("Fila Agregada a: "+st.getName()+"\n");
                         } else {
-                            System.out.println("Los datos no son correctos para crear una fila");
+                            this.textArea.append("ERROR, Los datos no son correctos para crear una fila");
                         }
                     } else {
-                        System.out.println("La tabla: " + name + ", NO EXISTE");
+                        this.textArea.append("ERROR, La tabla: "+name+", NO EXISTE");
                         break;
                     }
+                    System.out.println(st.getTree().printValues());
                 }
+            }
+            if (st != null) {
+                this.textArea.append("Filas de " + st.getName() + ":  \n");
+                
+                this.textArea.append(st.getTree().printValues());
             }
         } catch (ParserConfigurationException | SAXException | IOException ex) {
         }
@@ -200,10 +210,10 @@ public class FileHandler {
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         String nameNode = node.getNodeName().replaceAll(" ", "");
                         String valueNode = node.getTextContent().replaceAll(" ", "");
-                        if(st.getKey().equals(nameNode)){
+                        if (st.getKey().equals(nameNode)) {
                             //Buscar en arbol y eliminar
                         } else {
-                            System.out.println(nameNode+", No es llave primaria");
+                            System.out.println(nameNode + ", No es llave primaria");
                         }
                     }
                 }
@@ -214,8 +224,8 @@ public class FileHandler {
         }
     }
 
-    public void report(File file){
-        try{
+    public void report(File file) {
+        try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file);
@@ -223,13 +233,13 @@ public class FileHandler {
             for (int i = 0; i < nodeList.getLength(); i++) {//Recorrido de las estructuras encontrada
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    
+
                 }
             }
-        }catch (ParserConfigurationException | SAXException | IOException ex) {
+        } catch (ParserConfigurationException | SAXException | IOException ex) {
         }
     }
-    
+
     public boolean isInteger(String str) {
         try {
             Integer.parseInt(str);

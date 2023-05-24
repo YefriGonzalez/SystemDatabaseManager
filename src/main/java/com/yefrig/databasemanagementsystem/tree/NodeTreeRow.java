@@ -54,15 +54,15 @@ public class NodeTreeRow {
     }
 
     public void split(int splitIndex, NodeTreeRow rightSibling) {
-        rightSibling.numKeys = numKeys - splitIndex;
-        for (int i = 0; i < rightSibling.numKeys; i++) {
+        rightSibling.setNumKeys(numKeys - splitIndex);
+        for (int i = 0; i < rightSibling.getNumKeys(); i++) {
             rightSibling.keys[i] = keys[splitIndex + i];
             rightSibling.values[i] = values[splitIndex + i];
             keys[splitIndex + i] = 0;
             values[splitIndex + i] = null;
         }
         if (!isLeaf) {
-            for (int i = 0; i < rightSibling.numKeys + 1; i++) {
+            for (int i = 0; i < rightSibling.getNumKeys() + 1; i++) {
                 rightSibling.children[i] = children[splitIndex + i];
                 children[splitIndex + i] = null;
             }
@@ -71,34 +71,7 @@ public class NodeTreeRow {
         rightSibling.nextLeaf = nextLeaf;
         nextLeaf = rightSibling;
     }
-
-    public void split(int index, int order) {
-        NodeTreeRow right = new NodeTreeRow(order, isLeaf);
-        NodeTreeRow left = children[index];
-        right.numKeys = order - 1;
-        left.numKeys = order - 1;
-        right.nextLeaf = left.nextLeaf;
-        left.nextLeaf = right;
-        for (int i = 0; i < order - 1; i++) {
-            right.keys[i] = left.keys[i + order];
-            right.values[i] = left.values[i + order];
-        }
-        if (!left.isLeaf) {
-            for (int i = 0; i < order; i++) {
-                right.children[i] = left.children[i + order];
-            }
-        }
-        for (int i = numKeys; i > index; i--) {
-            children[i + 1] = children[i];
-            keys[i] = keys[i - 1];
-            values[i] = values[i - 1];
-        }
-        children[index + 1] = right;
-        keys[index] = left.keys[order - 1];
-        values[index] = left.values[order - 1];
-        numKeys++;
-    }
-
+      
     public int[] getKeys() {
         return keys;
     }

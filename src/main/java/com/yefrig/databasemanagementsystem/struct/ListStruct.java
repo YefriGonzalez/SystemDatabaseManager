@@ -44,11 +44,15 @@ public class ListStruct {
         return null;
     }
 
-    public void printList() {
+    public String printList() {
+        String text="";
         Struct current = head;
         while (current != null) {
-            System.out.println("Tabla: "+current.getName()+", Clave: "+current.getKey() + ", Columnas: \n"+current.getColumns().printList());
+            text+="Tabla: "+current.getName()+", Clave: "+current.getKey() + ", Columnas: \n"+current.getColumns().printList();
+            text+="----------------------------------------------------------------------------------\n";
             current = current.getNext();
         }
+        
+        return text;
     }
 }

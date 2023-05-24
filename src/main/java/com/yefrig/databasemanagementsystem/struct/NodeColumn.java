@@ -34,6 +34,7 @@ public class NodeColumn {
         this.next = next;
     }
     
+    @Override
     public String toString(){
         return "Nombre: "+name+"; Valor: "+type;
     }

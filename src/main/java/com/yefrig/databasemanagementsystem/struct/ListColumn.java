@@ -48,7 +48,7 @@ public class ListColumn {
         String text = "";
         NodeColumn current = head;
         while (current != null) {
-            text += "Nombre " + current.getName() + ", Tipo " + current.getType() + "\n";
+            text += "Nombre de columna: " + current.getName() + "; Tipo de dato: " + current.getType() + "\n";
             current = current.getNext();
         }
         return text;
@@ -59,7 +59,7 @@ public class ListColumn {
          String text = "";
         NodeColumn current = head;
         while (current != null) {
-            text += current.getName() + ": " + current.getType() + "\n";
+            text += current.getName() + ": " + current.getType() + ", ";
             current = current.getNext();
         }
         return text;

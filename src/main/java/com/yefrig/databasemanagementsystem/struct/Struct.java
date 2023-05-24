@@ -17,14 +17,16 @@ public class Struct {
     private Struct next;
     private ListColumn columns;
     private BPlusTreeRow tree;
-
+    private static int cont;
 
     public Struct(){
         this.next=null;
         this.tree=new BPlusTreeRow();
+        this.cont=0;
     }
     public void insertRow(ListColumn data) {
-        this.tree.insert(0,data);
+        this.tree.insert(cont,data);
+        cont++;
     }
 
     public String getName() {
