@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<estructuras>
+    <estructura>
+        <tabla>cliente</tabla>
+        <Nit> int </Nit>
+        <Nombre>char</Nombre>
+        <Apellido>char</Apellido>
+        <clave>Nit</clave>
+    </estructura>
+    <estructura>
+        <tabla> factura </tabla>
+        <NoFactura> int </NoFactura>
+        <relacion>
+        	<Nit> int </Nit>
+        	<cliente> Nit </cliente>
+        </relacion>
+        <Fecha> char </Fecha>
+        <Lugar> char </Lugar>
+        <Valor> int </Valor>
+        <clave> NoFactura </clave>
+    </estructura>
+</estructuras>

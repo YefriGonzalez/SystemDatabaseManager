@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.yefrig.databasemanagementsystem"},{"l":"com.yefrig.databasemanagementsystem.front"},{"l":"com.yefrig.databasemanagementsystem.struct"},{"l":"com.yefrig.databasemanagementsystem.tree"},{"l":"com.yefrig.databasemanagementsystem.treeArray"}]

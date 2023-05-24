@@ -30,7 +30,13 @@ public class BPlusTree<T, V extends Comparable<V>> {
         this.root = new LeafNode<T, V>(this.maxNumber, this.bTreeOrder);
         this.left = null;
     }
-
+    
+    /**
+     * Funcion para buscar un nodo por su llave primaria
+     *
+     * @param key
+     * @return T
+     */
   public T find(V key) {
         T t = this.root.find(key);
         if (t == null) {
@@ -50,6 +56,14 @@ public class BPlusTree<T, V extends Comparable<V>> {
         this.root.printTree();
     }
 
+    
+    /**
+     * Funcion recursiva para devolver los nodos del arbol con su ifnroamcion
+     *
+     * @param Node
+     * @param level
+     * 
+     */
     void printNodeRecursive(Node<T, V> node, int level) {
         if (node == null) {
             return;
@@ -82,6 +96,12 @@ public class BPlusTree<T, V extends Comparable<V>> {
         }
     }
 
+    /**
+     * Funcion publica para crear reportes
+     *
+     * @param frame
+     * 
+     */
     public void createReport(StartJFrame frame) {
         DefaultTableModel mode=new DefaultTableModel();
         mode.addColumn("Clave");
@@ -90,6 +110,12 @@ public class BPlusTree<T, V extends Comparable<V>> {
         frame.addTable(mode);
     }
 
+     /**
+     * Metodo recursivo que añade filas de tipo Object con la informacion de cada  item del arbol
+     *
+     * @param frame
+     * 
+     */
     void fillTableWithNodeData(Node<T, V> node, DefaultTableModel model) {
         
         if (node == null) {
@@ -124,6 +150,13 @@ public class BPlusTree<T, V extends Comparable<V>> {
         }
     }
 
+      /**
+     * Metodo para insertar un item, recibe el Objeto y la llave primaria
+     *
+     * 
+     * @param value
+     * @param key
+     */
    public void insert(T value, V key) {
         if (key == null) {
             return;

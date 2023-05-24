@@ -67,6 +67,7 @@ private int maxNumber;
         return this.childs[0].refreshLeft();
     }
 
+    
     /**
      * Cuando la inserción del nodo hoja completa con éxito la descomposición,
      * inserte recursivamente un nuevo nodo en el nodo principal para mantener

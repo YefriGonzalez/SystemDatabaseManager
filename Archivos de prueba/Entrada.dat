@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<clientes>
+    <cliente>
+        <Nit>18965555</Nit>
+        <Nombre>Juan</Nombre>
+        <Apellido>Perez</Apellido>
+    </cliente>
+    <cliente>
+        <Nit>11223344</Nit>
+        <Nombre>Yefri</Nombre>
+        <Apellido>Perez</Apellido>
+    </cliente>
+    <cliente>
+        <Nit>22345678</Nit>
+        <Nombre>Mario</Nombre>
+        <Apellido>Perez</Apellido>
+    </cliente>
+    
+</clientes>

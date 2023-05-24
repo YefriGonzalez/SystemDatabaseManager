@@ -20,6 +20,11 @@ public class ListColumn {
         return head == null;
     }
 
+    /**
+     * Funcion que inserta un nodo de tipo columna
+     *
+     * @param nodeColumn
+     */
     public void insertAtEnd(NodeColumn nodeColumn) {
         NodeColumn newNode = nodeColumn;
         if (isEmpty()) {
@@ -33,6 +38,12 @@ public class ListColumn {
         current.setNext(newNode);
     }
 
+    /**
+     * Funcion que retorna un nodo buscado por su nombre
+     *
+     * @param name
+     * @return NodeColumn
+     */
     public NodeColumn getNode(String name) {
         NodeColumn current = head;
         while (current != null) {
@@ -43,31 +54,42 @@ public class ListColumn {
         }
         return null;
     }
-    
-    public NodeColumn getPrimaryKey(){
-        NodeColumn current=head;
-        while(current!=null){
-            if(current.isPrimaryKey()){
+
+    /**
+     * Funcion que retorna el nodo que contiene la llave primaria
+     *
+     * @return Int
+     */
+    public NodeColumn getPrimaryKey() {
+        NodeColumn current = head;
+        while (current != null) {
+            if (current.isPrimaryKey()) {
                 return current;
             }
-            current=current.getNext();
+            current = current.getNext();
         }
         return null;
     }
 
+    /**
+     * Funcion que retorna un text con el recorrido de las columnas y su
+     * informacion
+     *
+     * @return String
+     */
     public String printList() {
         String text = "";
         NodeColumn current = head;
         while (current != null) {
-            text += "Nombre de columna: " + current.getName() + "; Tipo de dato: " + current.getType() + "; Llave primaria: "+current.isPrimaryKey()+"\n";
+            text += "Nombre de columna: " + current.getName() + "; Tipo de dato: " + current.getType() + "; Llave primaria: " + current.isPrimaryKey() + "\n";
             current = current.getNext();
         }
         return text;
     }
 
     @Override
-    public String toString(){
-         String text = "";
+    public String toString() {
+        String text = "";
         NodeColumn current = head;
         while (current != null) {
             text += current.getName() + ": " + current.getType() + ", ";
@@ -75,7 +97,12 @@ public class ListColumn {
         }
         return text;
     }
-    
+
+    /**
+     * Funcion que retorna la cantidad de columnas que tiene la lista
+     *
+     * @return Int
+     */
     public int getLength() {
         int cant = 0;
         NodeColumn current = head;
@@ -89,5 +116,5 @@ public class ListColumn {
     public NodeColumn getHead() {
         return head;
     }
-    
+
 }

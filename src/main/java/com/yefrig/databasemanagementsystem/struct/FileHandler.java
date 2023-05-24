@@ -36,16 +36,21 @@ public class FileHandler {
         this.frame = frame;
     }
 
+      /**
+     * Funcion inserta estructuras a la lista de estructuras
+     *
+     * @param file
+     */
     public void fileAddStruct(File file) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file);
             NodeList nodeList = document.getElementsByTagName("estructura");
-            for (int i = 0; i < nodeList.getLength(); i++) {//Recorrido de las estructuras encontrada
+            for (int i = 0; i < nodeList.getLength(); i++) {//Recorrido de las estructuras encontradas
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    Struct struct = new Struct(); //Estructura 
+                    Struct struct = new Struct(); 
                     ListColumn list = new ListColumn(); //Lista de campos de la estructura
                     NodeList childNodes = node.getChildNodes();
                     String clave = null; //Clave de la tabla
@@ -55,28 +60,28 @@ public class FileHandler {
                             String nodeName = childNode.getNodeName().replaceAll(" ", "");;//Nombre del nodo
                             String valueNode = childNode.getTextContent().replaceAll(" ", "");//Valor del nodo
                             valueNode = valueNode.replaceAll("\t", "");
-                            if (nodeName.equals("tabla")) {
-                                Struct tmp = listStruct.getStruct(valueNode);
+                            if (nodeName.equals("tabla")) { //SI el nombre del nodo es tabla
+                                Struct tmp = listStruct.getStruct(valueNode);//Buscar si hay una estructura con el nombre
                                 if (tmp == null) {
-                                    struct.setName(valueNode);
+                                    struct.setName(valueNode);//Insertar el nombre de la estructura
                                 } else {
                                     this.textArea.append("ERROR, La tabla " + valueNode + " ya existe \n");
                                     break;
                                 }
-                            } else if (nodeName.equals("clave")) {
+                            } else if (nodeName.equals("clave")) { //Si el nombre del nodo es clave
                                 clave = valueNode;
-                            } else if (nodeName.equals("relacion")) {
+                            } else if (nodeName.equals("relacion")) { //Si el nombre del nodo es relacion
                                 boolean table = false;//Bandera para saber que si existe la tabla de referencia
                                 String nameColumn = "";
                                 String valueColumn = "";
                                 NodeList listRelation = childNode.getChildNodes();
-                                for (int k = 0; k < listRelation.getLength(); k++) {
+                                for (int k = 0; k < listRelation.getLength(); k++) { //Recorrido de los hijos de una relacion
                                     Node childRelation = listRelation.item(k);
                                     if (childRelation.getNodeType() == Node.ELEMENT_NODE) {
                                         String name = childRelation.getNodeName().replaceAll(" ", "");
                                         String value = childRelation.getTextContent().replaceAll(" ", "");
-                                        Struct st = listStruct.getStruct(name);
-                                        if (st != null) {
+                                        Struct st = listStruct.getStruct(name); //Buscar una estructura con el nombre
+                                        if (st != null) { //significa que el nodo es referencia a una tabla
                                             if (st.getKey().equals(value)) {
                                                 table = true;
                                             }
@@ -87,7 +92,7 @@ public class FileHandler {
                                     }
 
                                 }
-                                if (table && !nameColumn.equals("") && !valueColumn.equals("")) {
+                                if (table && !nameColumn.equals("") && !valueColumn.equals("")) {//Signfica que no es de refrencia a una tabla sino a un campo
                                     NodeColumn nc = new NodeColumn(nameColumn, valueColumn);
                                     list.insertAtEnd(nc);
                                 } else {
@@ -101,15 +106,15 @@ public class FileHandler {
                         }
                     }
                     if (clave != null) {
-                        NodeColumn c = list.getNode(clave);
-                        c.setPrimaryKey(true);
+                        NodeColumn c = list.getNode(clave);//Insertar la clave
+                        c.setPrimaryKey(true); //Es llave primaria
                         if (c != null) {
                             struct.setKey(clave);
                             struct.setColumns(list);
                             listStruct.insertAtEnd(struct);
                             this.textArea.append("Estructura creada\n");
                         } else {
-                            this.textArea.append("ERROR, la llave primario no es correcta\n");
+                            this.textArea.append("ERROR, la llave primaria no es correcta\n");
                         }
                     }
                 }
@@ -122,6 +127,12 @@ public class FileHandler {
 
     }
 
+    
+     /**
+     * Funcion inserta una fila a una estructura
+     *
+     * @param file
+     */
     public void fileAddRow(File file) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();
@@ -133,17 +144,17 @@ public class FileHandler {
             NodeList nodeList = document.getElementsByTagName(rootTagName);
             NodeList list = nodeList.item(0).getChildNodes();
             Struct st = null;
-            for (int i = 0; i < list.getLength(); i++) {
+            for (int i = 0; i < list.getLength(); i++) {//Recorrido de las etiquetas encontradas
                 Node node = list.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     ListColumn listRows = new ListColumn();
                     String name = node.getNodeName().replaceAll(" ", "");
-                    st = listStruct.getStruct(name);
+                    st = listStruct.getStruct(name);//BUscar la estructura para insertar
                     int lenghtColumns = 0;
-                    if (st != null) {
-                        lenghtColumns = st.getColumns().getLength();
+                    if (st != null) { //SI la estructura existe
+                        lenghtColumns = st.getColumns().getLength();//Cantidad de columnas que tiene la estructura
                         NodeList listColumns = node.getChildNodes();
-                        NodeColumn primaryKey = st.getColumns().getPrimaryKey();
+                        NodeColumn primaryKey = st.getColumns().getPrimaryKey();//Nodo de llave primaria de la estructrua
                         if (primaryKey == null) {
                             break;
                         }
@@ -153,12 +164,12 @@ public class FileHandler {
                                 String nameNode = n.getNodeName().replaceAll(" ", "");
                                 String valueNode = n.getTextContent().replaceAll(" ", "");//Valor del nodo
                                 NodeColumn nc = st.getColumns().getNode(nameNode);
-                                if (nc != null) {
+                                if (nc != null) {//si el nodo existe en la estructura
                                     if (!valueNode.equals("")) {
-                                        String type = nc.getType();
-                                        if (primaryKey.getName().equals(nc.getName())) {
-                                            if (type.equals("int")) {
-                                                if (isInteger(valueNode)) {
+                                        String type = nc.getType();//Tipo de dato
+                                        if (primaryKey.getName().equals(nc.getName())) { //si el nodo es llave primario
+                                            if (type.equals("int")) {//Si es de tipo entero
+                                                if (isInteger(valueNode)) {//Evaluar si el dato del archivo si es entero
                                                     listRows.insertAtEnd(new NodeColumn(nameNode, valueNode, true));
                                                 } else {
                                                     this.textArea.append("ERROR, El valor no es un entero\n");
@@ -167,7 +178,7 @@ public class FileHandler {
                                             } else {
                                                 listRows.insertAtEnd(new NodeColumn(nameNode, valueNode, true));
                                             }
-                                        } else {
+                                        } else {//Si el nodo es un campo normal
                                             if (type.equals("int")) {
                                                 if (isInteger(valueNode)) {
                                                     listRows.insertAtEnd(new NodeColumn(nameNode, valueNode));
@@ -190,8 +201,8 @@ public class FileHandler {
                             }
 
                         }
-                        if (listRows.getLength() == lenghtColumns) {
-                            st.InsertRow(listRows, listRows.getPrimaryKey().getType());
+                        if (listRows.getLength() == lenghtColumns) { //SI la cantidad de datos en el archivo son igual a los que se necesitan
+                            st.InsertRow(listRows, listRows.getPrimaryKey().getType());//Insertar lista enlazada(fila) 
 
                             this.textArea.append("Fila Agregada a: " + st.getName() + "\n");
                         } else {
@@ -244,6 +255,11 @@ public class FileHandler {
         }
     }
 
+     /**
+     * Metodo que sirve para leeer archivo de reportes e instanciar metodo para reportes
+     *
+     * @param file
+     */
     public void report(File file) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newDefaultInstance();

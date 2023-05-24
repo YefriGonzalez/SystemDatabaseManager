@@ -17,16 +17,23 @@ public class Struct {
     private String key;
     private Struct next;
     private ListColumn columns;
-
+    private int cont;
     private BPlusTree tree;
 
     public Struct() {
+        this.cont=1;
         this.next = null;
         this.tree = new BPlusTree(4);
     }
  
+    /**
+     * Metodo que recibe el dato a guardar y su llave primaria para referencia
+     * @param data
+     * @param primaryKey
+     */
     public void InsertRow(ListColumn data, String primaryKey) {
-        this.tree.insert(data, primaryKey);
+        this.tree.insert(data, cont);
+        cont++;
     }
 
     public BPlusTree getTree() {

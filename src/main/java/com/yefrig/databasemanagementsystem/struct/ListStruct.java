@@ -20,6 +20,11 @@ public class ListStruct {
         return head == null;
     }
 
+    /**
+     * Metodo que insertar Estructura a lista de estructuras
+     * Realiza el recorrido hasta encontra una estructura que su siguiente sea nulo y asigna la estructura
+     * @param struct
+      */
     public void insertAtEnd(Struct struct) {
         Struct newStruct = struct;
         if (isEmpty()) {
@@ -33,6 +38,11 @@ public class ListStruct {
         current.setNext(newStruct);
     }
 
+    /**
+     * FUncion que realiza la busqueda de una estructura por  su nombre
+     * @param name
+     * @return  Struct
+      */
     public Struct getStruct(String name) {
         Struct current = head;
         while (current != null) {
@@ -44,6 +54,10 @@ public class ListStruct {
         return null;
     }
 
+    /**
+     * Funcion que retorna la lista enlazada de estructuras con su informacion
+     * @return  String
+      */
     public String printList() {
         String text="";
         Struct current = head;
