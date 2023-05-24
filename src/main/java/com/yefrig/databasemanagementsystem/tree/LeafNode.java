@@ -14,7 +14,7 @@ import com.yefrig.databasemanagementsystem.struct.ListColumn;
  */
 class LeafNode<T, V extends Comparable<V>> extends Node<T, V> {
 
-    private int maxNumber;
+  private int maxNumber;
     protected ListColumn values[];
     protected LeafNode left;
     protected LeafNode right;

@@ -9,8 +9,7 @@ package com.yefrig.databasemanagementsystem.tree;
  * @author yefri
  */
 class BPlusNode<T, V extends Comparable<V>> extends Node<T, V> {
-
-    private int maxNumber;
+private int maxNumber;
     private int bTreeOrder;
 
     public BPlusNode(int maxNumber, int bTreeOrder) {
@@ -30,7 +29,7 @@ class BPlusNode<T, V extends Comparable<V>> extends Node<T, V> {
     T find(V key) {
         int i = 0;
         while (i < this.number) {
-            if (key.compareTo((V) this.keys[i]) > 0) {
+            if (key.compareTo((V) this.keys[i]) <= 0) {
                 break;
             }
             i++;

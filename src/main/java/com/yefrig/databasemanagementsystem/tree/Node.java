@@ -25,7 +25,7 @@ public abstract class Node<T, V extends Comparable<V>> {
     }
 
     void printTree() {
-        printNode(this, 0);
+        printNodeValues(this, 0);
     }
 
     void printNode(Node<T, V> node, int level) {
@@ -46,8 +46,37 @@ public abstract class Node<T, V extends Comparable<V>> {
         }
     }
 
-    abstract T find(V key);
+    void printNodeValues(Node<T, V> node, int level) {
+        if (node == null) {
+            return;
+        }
+        boolean isLeafNode = node instanceof LeafNode;
+        for (int i = 0; i < node.number; i++) {
+            if (node.childs[i] != null) {
+                printNode(node.childs[i], level + 1);
+            }
+            for (int j = 0; j < level; j++) {
+                System.out.print("\t");
+            }
+            if (isLeafNode) {
+                LeafNode<T, V> leafNode = (LeafNode<T, V>) node;
+                System.out.println(leafNode.values[i].toString());
+            } else {
+                if (node.childs[i] != null && node.childs[i].number > 0) {
+                    System.out.println(node.keys[i].toString());
+                } else {
+                    LeafNode<T, V> leafNode = (LeafNode<T, V>) node;
+                    System.out.println(leafNode.values[i].toString());
+                }
+            }
+        }
+        if (node.childs[node.number] != null) {
+            printNode(node.childs[node.number], level + 1);
+        }
 
+    }
+
+    abstract T find(V key);
 
     abstract Node<T, V> insert(T value, V key);
 

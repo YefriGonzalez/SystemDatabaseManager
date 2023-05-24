@@ -85,4 +85,9 @@ public class ListColumn {
         }
         return cant;
     }
+
+    public NodeColumn getHead() {
+        return head;
+    }
+    
 }

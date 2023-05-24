@@ -4,6 +4,10 @@
  */
 package com.yefrig.databasemanagementsystem.tree;
 
+import com.yefrig.databasemanagementsystem.front.StartJFrame;
+import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author yefri
@@ -27,17 +31,14 @@ public class BPlusTree<T, V extends Comparable<V>> {
         this.left = null;
     }
 
-  
-
-    public T find(V key) {
+  public T find(V key) {
         T t = this.root.find(key);
         if (t == null) {
             System.out.println("no existe");
-            return null;
         }
         return t;
     }
-
+  
     public String printTreeValues() {
         text = "";
         printNodeRecursive(this.root, 0);
@@ -81,7 +82,49 @@ public class BPlusTree<T, V extends Comparable<V>> {
         }
     }
 
-    public void insert(T value, V key) {
+    public void createReport(StartJFrame frame) {
+        DefaultTableModel mode=new DefaultTableModel();
+        mode.addColumn("Clave");
+        mode.addColumn("valor");
+        fillTableWithNodeData(this.root, mode);
+        frame.addTable(mode);
+    }
+
+    void fillTableWithNodeData(Node<T, V> node, DefaultTableModel model) {
+        
+        if (node == null) {
+            return;
+        }
+        boolean isLeafNode = node instanceof LeafNode;
+
+        for (int i = 0; i < node.number; i++) {
+            if (node.childs[i] != null) {
+                fillTableWithNodeData(node.childs[i], model);
+            }
+
+            Object[] rowData = null;
+
+            if (isLeafNode) {
+                LeafNode<T, V> leafNode = (LeafNode<T, V>) node;
+                rowData = new Object[]{leafNode.keys[i], leafNode.values[i].toString()};
+            } else {
+                if (node.childs[i] != null && node.childs[i].number > 0) {
+                   // rowData = new Object[]{node.keys[i], ""};
+                } else {
+                    LeafNode<T, V> leafNode = (LeafNode<T, V>) node;
+                    rowData = new Object[]{leafNode.keys[i], leafNode.values[i]};
+                }
+            }
+
+            model.addRow(rowData);
+        }
+
+        if (node.childs[node.number] != null) {
+            fillTableWithNodeData(node.childs[node.number], model);
+        }
+    }
+
+   public void insert(T value, V key) {
         if (key == null) {
             return;
         }

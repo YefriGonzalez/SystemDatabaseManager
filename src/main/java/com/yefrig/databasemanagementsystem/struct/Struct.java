@@ -5,6 +5,7 @@
 package com.yefrig.databasemanagementsystem.struct;
 
 import com.yefrig.databasemanagementsystem.tree.BPlusTree;
+import javax.swing.JFrame;
 
 /**
  *
@@ -23,10 +24,9 @@ public class Struct {
         this.next = null;
         this.tree = new BPlusTree(4);
     }
-
-    public Boolean InsertRow(ListColumn data, String primaryKey) {
+ 
+    public void InsertRow(ListColumn data, String primaryKey) {
         this.tree.insert(data, primaryKey);
-        return true;
     }
 
     public BPlusTree getTree() {

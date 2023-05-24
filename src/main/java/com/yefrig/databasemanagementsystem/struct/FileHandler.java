@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,10 +28,12 @@ public class FileHandler {
 
     private ListStruct listStruct;
     private JTextArea textArea;
+    private StartJFrame frame;
 
-    public FileHandler(JTextArea textArea) {
+    public FileHandler(JTextArea textArea, StartJFrame frame) {
         listStruct = new ListStruct();
         this.textArea = textArea;
+        this.frame = frame;
     }
 
     public void fileAddStruct(File file) {
@@ -188,12 +191,9 @@ public class FileHandler {
 
                         }
                         if (listRows.getLength() == lenghtColumns) {
-                            boolean process = st.InsertRow(listRows, listRows.getPrimaryKey().getType());
-                            if (process) {
-                                this.textArea.append("Fila Agregada a: " + st.getName() + "\n");
-                            } else {
-                                this.textArea.append("ERROR, fila ya existente");
-                            }
+                            st.InsertRow(listRows, listRows.getPrimaryKey().getType());
+
+                            this.textArea.append("Fila Agregada a: " + st.getName() + "\n");
                         } else {
                             this.textArea.append("ERROR, Los datos no son correctos para crear una fila");
                         }
@@ -253,19 +253,25 @@ public class FileHandler {
             for (int i = 0; i < nodeList.getLength(); i++) {//Recorrido de las estructuras encontrada
                 Node node = nodeList.item(i);
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    String nameNode = node.getNodeName().replaceAll(" ", "");
-                    String valueNode = node.getTextContent().replaceAll(" ", "");
-                    Struct st = listStruct.getStruct(nameNode);
-                    if (st != null) {
-                        if (st.getColumns().getPrimaryKey().getName().equals(valueNode)) {
-                            this.textArea.append("Filas de " + st.getName() + ":  \n");
-                            this.textArea.append(st.getTree().printTreeValues());
-                        } else {
-                            this.textArea.append("ERROR,  " + valueNode + ", NO ES LLAVE PRIMARIA");
+                    NodeList childNodes = node.getChildNodes();
+                    for (int j = 0; j < childNodes.getLength(); j++) {
+                        Node n = childNodes.item(j);
+                        if (n.getNodeType() == Node.ELEMENT_NODE) {
+                            String nameNode = n.getNodeName().replaceAll(" ", "");
+                            String valueNode = n.getTextContent().replaceAll(" ", "");
+                            Struct st = listStruct.getStruct(nameNode);
+                            if (st != null) {
+                                if (st.getColumns().getPrimaryKey().getName().equals(valueNode)) {
+                                    st.getTree().createReport(frame);
+                                } else {
+                                    this.textArea.append("ERROR,  " + valueNode + ", NO ES LLAVE PRIMARIA");
+                                }
+                            } else {
+                                this.textArea.append("ERROR, La tabla: " + n.getNodeName() + ", NO EXISTE");
+                            }
                         }
-                    } else {
-                        this.textArea.append("ERROR, La tabla: " + node.getNodeName() + ", NO EXISTE");
                     }
+
                 }
             }
         } catch (ParserConfigurationException | SAXException | IOException ex) {
