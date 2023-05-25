@@ -5,6 +5,7 @@
 package com.yefrig.databasemanagementsystem.tree;
 
 import com.yefrig.databasemanagementsystem.front.StartJFrame;
+import com.yefrig.databasemanagementsystem.struct.Struct;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
@@ -100,14 +101,15 @@ public class BPlusTree<T, V extends Comparable<V>> {
      * Funcion publica para crear reportes
      *
      * @param frame
+     * @param struct
      * 
      */
-    public void createReport(StartJFrame frame) {
+    public void createReport(StartJFrame frame,Struct struct) {
         DefaultTableModel mode=new DefaultTableModel();
         mode.addColumn("Clave");
         mode.addColumn("valor");
         fillTableWithNodeData(this.root, mode);
-        frame.addTable(mode);
+        frame.addTable(mode,struct);
     }
 
      /**

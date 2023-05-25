@@ -278,7 +278,7 @@ public class FileHandler {
                             Struct st = listStruct.getStruct(nameNode);
                             if (st != null) {
                                 if (st.getColumns().getPrimaryKey().getName().equals(valueNode)) {
-                                    st.getTree().createReport(frame);
+                                    st.getTree().createReport(frame,st);
                                 } else {
                                     this.textArea.append("ERROR,  " + valueNode + ", NO ES LLAVE PRIMARIA");
                                 }
